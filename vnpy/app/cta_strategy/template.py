@@ -91,7 +91,14 @@ class CtaTemplate(ABC):
             "variables": self.get_variables(),
         }
         return strategy_data
-
+    def get_position_detail(self, vt_symbol: str):        
+        """"""        
+        return self.cta_engine.get_position_detail(vt_symbol)
+    def get_order(self,vt_orderid:str) -> Union[OrderData,None]:
+        """
+        通过vt_orderid获取委托单
+        """
+        return self.cta_engine.get_order(vt_orderid) 
     @virtual
     def on_init(self):
         """
@@ -437,14 +444,7 @@ class TargetPosTemplate(CtaTemplate):
             if vt_orderid not in self.cancel_orderids:
                 self.cancel_order(vt_orderid)
                 self.cancel_orderids.append(vt_orderid)
-    def get_position_detail(self, vt_symbol: str):        
-        """"""        
-        return self.cta_engine.get_position_detail(vt_symbol)
-    def get_order(self,vt_orderid:str) -> Union[OrderData,None]:
-        """
-        通过vt_orderid获取委托单
-        """
-        return self.cta_engine.get_order(vt_orderid) 
+
     def send_new_order(self):
         """"""
         pos_change = self.target_pos - self.pos
