@@ -107,15 +107,16 @@ class PositionHolding:
         self.exchange: Exchange = contract.exchange
 
         self.active_orders: Dict[str, OrderData] = {}
-
         self.long_pos: float = 0
         self.long_yd: float = 0
         self.long_td: float = 0
-
+        self.long_pnl: float = 0
+        self.long_price: float = 0
         self.short_pos: float = 0
         self.short_yd: float = 0
         self.short_td: float = 0
-
+        self.short_pnl: float = 0
+        self.short_price: float = 0
         self.long_pos_frozen: float = 0
         self.long_yd_frozen: float = 0
         self.long_td_frozen: float = 0
@@ -129,15 +130,22 @@ class PositionHolding:
         if position.direction == Direction.LONG:
             self.long_pos = position.volume
             self.long_yd = position.yd_volume
+            self.long_pnl = position.pnl      
+            self.long_price = position.price   
             self.long_td = self.long_pos - self.long_yd
+            self.long_pos_frozen = position.frozen 
         else:
             self.short_pos = position.volume
             self.short_yd = position.yd_volume
+            self.short_pnl = position.pnl           
+            self.short_price = position.price  
             self.short_td = self.short_pos - self.short_yd
+            self.short_pos_frozen = position.frozen
 
     def update_order(self, order: OrderData) -> None:
         """"""
-        if order.is_active():
+        #active_orders只记录未成交和部分成交委托单
+        if order.status in [Status.NOTTRADED, Status.PARTTRADED]:
             self.active_orders[order.vt_orderid] = order
         else:
             if order.vt_orderid in self.active_orders:
@@ -147,10 +155,19 @@ class PositionHolding:
 
     def update_order_request(self, req: OrderRequest, vt_orderid: str) -> None:
         """"""
-        gateway_name, orderid = vt_orderid.split(".")
-
-        order = req.create_order_data(orderid, gateway_name)
-        self.update_order(order)
+        #分离gateway_name和orderid
+        gateway_name,*split_orderid = vt_orderid.split("_")
+        if len(split_orderid) == 1:
+            self.order_id = split_orderid[0]
+        elif len(split_orderid) == 2:
+            self.order_id = "_".join([split_orderid[0],split_orderid[1]])
+        elif len(split_orderid) == 3:
+            self.order_id = "_".join([split_orderid[0],split_orderid[1],split_orderid[2]])
+        elif len(split_orderid) == 4:
+            self.order_id = "_".join([split_orderid[0],split_orderid[1],split_orderid[2],split_orderid[3]])
+        if self.order_id:
+            order = req.create_order_data(self.order_id, gateway_name)
+            self.update_order(order)
 
     def update_trade(self, trade: TradeData) -> None:
         """"""
