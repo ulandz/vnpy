@@ -5,7 +5,7 @@ import os
 import traceback
 from collections import defaultdict,OrderedDict
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any,Callable, Dict, Tuple, Union, Optional
 from datetime import datetime, timedelta
 from concurrent.futures import ThreadPoolExecutor
 from copy import copy
@@ -981,3 +981,8 @@ class CtaEngine(BaseEngine):
             position_detail.short_price = 0      
             position_detail.short_pos_frozen = 0         
             return position_detail
+    def get_order(self,vt_orderid:str) -> Union[OrderData,None]:
+        """
+        通过vt_orderid获取委托单
+        """
+        self.main_engine.get_order(vt_orderid)
