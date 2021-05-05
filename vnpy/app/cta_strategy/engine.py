@@ -964,8 +964,7 @@ class CtaEngine(BaseEngine):
         try:        
             return self.offset_converter.get_position_holding(vt_symbol)     
         except:            
-            self.write_log(f"当前获取持仓信息为：
-            {self.offset_converter.get_position_holding(vt_symbol)},等待获取持仓信息") 
+            self.write_log(f"当前获取持仓信息为：{self.offset_converter.get_position_holding(vt_symbol)},等待获取持仓信息") 
             position_detail = OrderedDict()            
             position_detail.active_orders = {}            
             position_detail.long_pos = 0           
