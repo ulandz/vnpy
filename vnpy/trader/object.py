@@ -126,7 +126,22 @@ class OrderData(BaseData):
         self.vt_orderid = f"{self.gateway_name}_{self.orderid}"
         #未成交量
         self.untrade = self.volume - self.traded
-
+        # With millisecond    
+        if self.date and "." in self.time:   
+            if "-"in self.date:          
+                self.datetime = datetime.strptime(" ".join([self.date, self.time]), 
+                "%Y-%m-%d %H:%M:%S.%f")    
+            else:    
+                self.datetime = datetime.strptime(" ".join([self.date, self.time]),
+                "%Y%m%d %H:%M:%S.%f")   
+        # Without millisecond        
+        elif self.date:            
+            if "-" in self.date:       
+                self.datetime = datetime.strptime(" ".join([self.date, self.time]),
+                "%Y-%m-%d %H:%M:%S")        
+            else:               
+                self.datetime = datetime.strptime(" ".join([self.date, self.time]),
+                "%Y%m%d %H:%M:%S")
     def is_active(self) -> bool:
         """
         Check if the order is active.
