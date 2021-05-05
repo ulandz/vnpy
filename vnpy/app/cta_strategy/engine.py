@@ -3,7 +3,7 @@
 import importlib
 import os
 import traceback
-from collections import defaultdict
+from collections import defaultdict,OrderedDict
 from pathlib import Path
 from typing import Any, Callable
 from datetime import datetime, timedelta
@@ -20,7 +20,8 @@ from vnpy.trader.object import (
     LogData,
     TickData,
     BarData,
-    ContractData
+    ContractData,
+    OrderData
 )
 from vnpy.trader.event import (
     EVENT_TICK,
@@ -954,3 +955,29 @@ class CtaEngine(BaseEngine):
             subject = "CTA策略引擎"
 
         self.main_engine.send_email(subject, msg)
+        
+    def get_position_detail(self, vt_symbol):    
+        """   
+        查询long_pos,short_pos(持仓)，long_pnl,short_pnl(盈亏),active_order(未成交字典)      
+        收到PositionHolding类数据     
+        """        
+        try:        
+            return self.offset_converter.get_position_holding(vt_symbol)     
+        except:            
+            self.write_log(f"当前获取持仓信息为：
+            {self.offset_converter.get_position_holding(vt_symbol)},等待获取持仓信息") 
+            position_detail = OrderedDict()            
+            position_detail.active_orders = {}            
+            position_detail.long_pos = 0           
+            position_detail.long_pnl = 0       
+            position_detail.long_yd = 0            
+            position_detail.long_td = 0          
+            position_detail.long_pos_frozen = 0        
+            position_detail.long_price = 0            
+            position_detail.short_pos = 0            
+            position_detail.short_pnl = 0          
+            position_detail.short_yd = 0      
+            position_detail.short_td = 0         
+            position_detail.short_price = 0      
+            position_detail.short_pos_frozen = 0         
+            return position_detail
