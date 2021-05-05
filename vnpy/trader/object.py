@@ -119,11 +119,13 @@ class OrderData(BaseData):
     status: Status = Status.SUBMITTING
     datetime: datetime = None
     reference: str = ""
-
+    cancel_time: str = ""
     def __post_init__(self):
         """"""
-        self.vt_symbol = f"{self.symbol}.{self.exchange.value}"
-        self.vt_orderid = f"{self.gateway_name}.{self.orderid}"
+        self.vt_symbol = f"{self.symbol}_{self.exchange.value}/{self.gateway_name}"
+        self.vt_orderid = f"{self.gateway_name}_{self.orderid}"
+        #未成交量
+        self.untrade = self.volume - self.traded
 
     def is_active(self) -> bool:
         """
