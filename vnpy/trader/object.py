@@ -119,13 +119,16 @@ class OrderData(BaseData):
     status: Status = Status.SUBMITTING
     datetime: datetime = None
     reference: str = ""
+    date: str = ""    
+    time: str = "" 
     cancel_time: str = ""
     def __post_init__(self):
         """"""
-        self.vt_symbol = f"{self.symbol}_{self.exchange.value}/{self.gateway_name}"
-        self.vt_orderid = f"{self.gateway_name}_{self.orderid}"
-        #未成交量
-        self.untrade = self.volume - self.traded
+        self.vt_symbol = f"{self.symbol}.{self.exchange.value}"     
+        self.vt_orderid = f"{self.gateway_name}.{self.orderid}"
+
+        self.untraded = self.volume - self.traded
+
         # With millisecond    
         if self.date and "." in self.time:   
             if "-"in self.date:          
