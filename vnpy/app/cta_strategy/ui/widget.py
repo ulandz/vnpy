@@ -492,7 +492,8 @@ class SettingEditor(QtWidgets.QDialog):
 
         return setting
 class BacktesterChart(pg.GraphicsWindow):
-""""""
+    """
+    """
 
     def __init__(self):
         """"""
