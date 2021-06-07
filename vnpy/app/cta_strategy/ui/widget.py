@@ -17,9 +17,9 @@ from ..base import (
 from ..engine import CtaEngine
 from .rollover import RolloverTool
 for i in range(len(self.balance_plot.items)):
-if isinstance(self.balance_plot.items[i], pg.graphicsItems.LinearRegionItem.LinearRegionItem):
-    self.balance_plot.removeItem(self.balance_plot.removeItem(self.balance_plot.items[i]))
-    self.region_size = [df.shape[0]-99, df.shape[0]-1]
+    if isinstance(self.balance_plot.items[i], pg.graphicsItems.LinearRegionItem.LinearRegionItem):
+        self.balance_plot.removeItem(self.balance_plot.removeItem(self.balance_plot.items[i]))
+        self.region_size = [df.shape[0]-99, df.shape[0]-1]
 
 class CtaManager(QtWidgets.QWidget):
     """"""
